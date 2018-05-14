@@ -1,0 +1,22 @@
+server:
+    port: 8765
+    
+spring:
+    application:
+        name: reviewing-service-sidecar
+      
+sidecar:
+    port: 3000
+    health-uri: http://114.70.193.179:3001/review/health
+ 
+eureka:
+  client:
+    healthcheck: true 
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${vcap.services.eureka-service.credentials.uri:http://114.70.193.179:8761}/eureka/
+    instance:
+      statusPageUrlPath: https://${eureka.hostname}/info
+      healthCheckUrlPath: https://${eureka.hostname}/health
+      homePageUrl: https://${eurkea.hostname}/
+    preferIpAddress: true

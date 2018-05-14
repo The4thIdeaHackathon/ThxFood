@@ -1,0 +1,77 @@
+zuul:
+  ignored-service: "*" 
+  prefix: /api
+  routes:
+    sharing-service:
+      path: /sharing/**
+      serviceId: sharing-service-sidecar
+      #/bbs/로 forwarded되는 http calls는 Board-service로 감.
+      stripPrefix: false
+    product-service:
+      path: /product/**
+      serviceId: product-service
+      stripPrefix: false
+   
+    review-service:
+       path: /review/**
+       serviceId: reviewing-service-sidecar
+       stripPrefix: false
+ 
+ 
+    #sharing-service:
+    #ribbon: 
+    #eureka:
+    #enabled: true
+    #NIWSServerListClassName: com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
+    #ListOfServers: http://114.70.193.179:8766
+    #ConnectTimeout: 1000
+    #ReadTimeout: 3000
+    #MaxTotalHttpConnections: 500
+    #MaxConnectionsPerHost: 100  
+    
+    
+    #product-service:
+    #ribbon: 
+    #eureka:
+    #  enabled: true
+    #NIWSServerListClassName: com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
+    #ListOfServers: http://114.70.193.179:8700
+    #ConnectTimeout: 1000
+    #ReadTimeout: 3000
+    #MaxTotalHttpConnections: 500
+    #MaxConnectionsPerHost: 100
+    
+
+    #review-service:
+    #ribbon: 
+    #eureka:
+    #  enabled: true
+    #NIWSServerListClassName: com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
+    #ListOfServers: http://114.70.193.179:8765
+    #ConnectTimeout: 1000
+    #ReadTimeout: 3000
+    #MaxTotalHttpConnections: 500
+    #MaxConnectionsPerHost: 100
+
+    
+ribbon:
+  eureka:
+    enabled: true
+
+
+eureka:
+  client:
+    healthcheck: true 
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${vcap.services.eureka-service.credentials.uri:http://114.70.193.179:8761}/eureka/
+    instance:
+      statusPageUrlPath: https://${eureka.hostname}/info
+      healthCheckUrlPath: https://${eureka.hostname}/health
+      homePageUrl: https://${eurkea.hostname}/
+    preferIpAddress: true
+
+
+server:
+  port: 4000
+ 

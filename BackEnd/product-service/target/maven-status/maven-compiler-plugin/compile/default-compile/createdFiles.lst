@@ -1,0 +1,6 @@
+com/product/ProductServiceApplication.class
+com/product/rest/GoodsController.class
+com/product/service/GoodsServiceImpl.class
+com/product/service/GoodsService.class
+com/product/domain/Goods.class
+com/product/repository/GoodsRepository.class
