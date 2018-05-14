@@ -1,0 +1,154 @@
+let bbs = [
+    {article_id:1, ID: 'kcc1', title: 'test1', content:'TEST content 1'},
+    {article_id:2, ID: 'kcc2', title: 'test2', content:'TEST content 2'},
+    {article_id:3, ID: 'kcc3', title: 'test3', content:'TEST content 3'},
+    {article_id:4, ID: 'kcc4', title: 'test4', content:'TEST content 4'},
+    {article_id:5, ID: 'kcc5', title: 'test5', content:'TEST content 5'},
+    {article_id:6, ID: 'kcc6', title: 'test6', content:'TEST content 6'},
+    {article_id:7, ID: 'kcc7', title: 'test7', content:'TEST content 7'},
+    {article_id:8, ID: 'kcc8', title: 'test8', content:'TEST content 8'},
+    {article_id:9, ID: 'kcc9', title: 'test9', content:'TEST content 9'},
+    {article_id:10, ID: 'kcc10', title: 'test10', content:'TEST content 10'},
+    {article_id:11, ID: 'kcc11', title: 'title', content:'TEST content 11'}
+]
+
+const models = require('../../models');
+
+//GET bbs 
+const index = (req,res) => {
+
+    //맨 위 10개 가져오자 
+    //
+    /*
+    const max_id = bbs.length;
+    var articles;
+    const last = req.query.last;
+    console.log("last : ", last); 
+
+    if (!last){
+
+        return res.json(bbs);
+
+    }else{
+
+        if(last != 'new'){
+                   
+            return res.status(400).end();
+        }
+                    
+    }
+    */
+    models.board.findAll({
+        limit: 10,
+        order: [['id',' DESC']]
+        
+    }).then(result => {
+        if(!result) return status(404).end();
+        res.json(result);
+    });
+
+
+    //articles = bbs.filter(article => article.article_id > (max_id -10));
+    //res.json(articles);
+
+}
+//GET bbs/:id(userid)
+const show = (req,res) => {
+
+    //id가 숫자인경우-> article_id 탐색
+
+    const id = req.params.article_id;
+    const article_id = parseInt(req.params.article_id,10);
+    
+
+    console.log("article_id : ", article_id);
+
+    //:id가 숫자가 아 닌경우  
+    if (Number.isNaN(article_id)) 
+    {
+
+        models.board.findAll({
+            where: { id }
+        }).then( result => {
+            if (!result) return status(404).end(); //result가 없으면 404
+            res.json(result);
+        }).catch(err=>{
+            console.log(err);
+        });
+
+
+    }
+    else{ 
+    //:id가 숫자인 경우 
+        models.board.findOne({
+            where: { article_id }
+        }).then(result => {
+            if(!result) return status(404).end();
+            res.json(result);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    
+
+
+    
+
+    // if (Number.isNaN(article_id))
+    //{
+    //    return res.status(400).end();
+    // }
+    //
+    //id가 문자열인경우 -> id 탐색 
+
+    //article_id가 없는 경우
+    //const article = bbs.filter(article => article.article_id === article_id)[0]
+
+    //if(!article){
+    //    return res.status(404).end();
+    //}
+    //res.json(article);
+
+}
+
+const create = (req, res) => {
+
+    var result= {};
+    const id = req.body.id;
+    const title = req.body.title;
+    const content = req.body.content;
+    const likeit = req.body.likeit;
+
+    const article = {id, title, content, likeit};
+    console.log(article);
+    if(!id || !title || !content || !likeit )
+    {
+        
+        result["success"] = 0;
+        result["error"]="Invalid Data";
+        res.json(result);
+        return res.status(400).end();
+
+    }
+
+    
+    models.board.create(article)
+        .then(function(result) {
+            console.log("article : " , article);
+            res.json(article);
+            res.status(200).json(result);
+        }) //성공
+        .catch(function(err){
+            if (err){
+                console.log(err);
+                return res.status(400).end();
+            }
+        res.status(500).end();
+        })
+        
+}
+
+
+
+module.exports = {index, show, create};
